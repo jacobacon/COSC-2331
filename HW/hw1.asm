@@ -3,7 +3,7 @@ SECTION .data
 	msg db "Enter Your Goals For COSC2331 in 80 characters: "
 	msg_len equ $-msg
 
-	msgtwo db "So Your Goal Is: "
+	msgtwo db "So, Your Goal Is, "
 	msgtwo_len equ $-msgtwo
 SECTION .bss
 	;Create a buffer for input
