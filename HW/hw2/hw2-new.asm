@@ -15,10 +15,10 @@ SECTION .data
 
 SECTION .bss
 
-	;Create a buffer for input
-	input resb 51
-	input_len resw 1
-	counter resw 1
+	
+	input resb 51			;Create a buffer for input
+	input_len resw 1		;Create a buffer for input length
+	counter resw 1			;Create a buffer for counter
 
 
 SECTION .text
@@ -53,46 +53,47 @@ SECTION .text
 	mov eax, 4			;syswrite
 	int 80h				;interrupt
 
-	mov ecx, input
+	mov ecx, input			;Set ECX to Input so we can modify it quicly
 
-	mov dword [counter], input_len
-	call toUpper
+	mov dword [counter], input_len	;Set counter to input length
+	call toUpper			;Call to upper
 
-	call print
+	call print			;Print
 
-	mov dword [counter], input_len
+	mov ecx, input			;Reset ecx
+	mov dword [counter], input_len	;Reset counter
 
-	call toLower
-	call print
+	call toLower			;Call to lower
+	call print			;Print
 
-	call end
+	jmp end				;Go to the end
 
 
 toUpper:
-	mov al, [ecx]
+	mov al, [ecx]			;Get the current character
 
-	cmp al, 64
-	jle nextUpper
+	cmp al, 64			
+	jle nextUpper			;Make sure the character is in range
 
-	;cmp al, 123
-	;jge nextUpper
+	cmp al, 123			;Make sure the character is in range
+	jge nextUpper
 
-	cmp al, 97
+	cmp al, 97			;Make a lowercase character uppercase
 	jge makeUpper
 
 	ret
 
 
 toLower:
-	mov al, [ecx]
+	mov al, [ecx]			;Get the current character
 
-	cmp al, 64
+	cmp al, 64			;Make sure the character is in range
 	jle nextLower
 
-	cmp al, 123
+	cmp al, 123			;Make sure the character is in range
 	jge nextLower
 
-	cmp al, 90
+	cmp al, 90			;Make an uppercase character lowercase
 	jle makeLower
 
 	ret
@@ -107,7 +108,7 @@ end:
 	int 80h				;interrupt
 
 print:  
-	sub byte [input_len], 3
+	;sub byte [input_len], 3
 	mov ecx, input     		;what to print
         mov edx, [input_len]           	;length of string to be printed
         mov ebx, 1
@@ -117,27 +118,27 @@ print:
 	ret
 
 nextUpper:
-	inc ecx
-	dec byte [counter]
-	jz done
-	jnz toUpper
+	inc ecx				;Move ecx
+	dec byte [counter]		;Dec counter
+	jz done				;If the counter is 0, end
+	jnz toUpper			;Otherwise go back to Upper
 
 makeUpper:
-	sub byte [ecx], 32
-	inc ecx
-	dec byte [counter]
-	jz done
-	jnz toUpper
+	sub byte [ecx], 32		;Subtract 32 from the character
+	inc ecx				;Move ecx
+	dec byte [counter]		;Dec counter
+	jz done				;If the counter is 0, end
+	jnz toUpper			;Otherwise go back to Upper
 
 nextLower:
-	inc ecx
-	dec byte [counter]
-	jz done
-	jnz toLower
+	inc ecx				;Move ecx
+	dec byte [counter]		;Dec counter
+	jz done				;If the counter is 0, end
+	jnz toLower			;Otherwise go back to Lower
 
 makeLower:
-	add byte [ecx], 32
-	inc ecx
-	dec byte [counter]
-	jz done
-	jnz toLower
+	add byte [ecx], 32		;Add 32 to the character
+	inc ecx				;Move ecx
+	dec byte [counter]		;Dec counter
+	jz done				;If the counter is 0, end
+	jnz toLower			;Otherwise go back to Lower
