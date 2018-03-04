@@ -1,4 +1,6 @@
 SECTION .data
+	bin_msg db "Binary Number: "
+	bin_msg_len equ $ - bin_msg
 
 	number dw 0x000F
 	count db 16
@@ -44,6 +46,12 @@ write_one:
 	jz print			;If (count == 0) -> print
 
 print:
+	mov eax, 4			;SYSWRITE
+	mov ebx, 1			;STDOUT
+	mov ecx, bin_msg		;Set to output string
+	mov edx, bin_msg_len		;Length of the output
+	int 80h				;Interrupt
+
 	mov eax, 4			;SYSWRITE
 	mov ebx, 1			;STDOUT
 	mov ecx, outstring		;Set to output string
