@@ -1,0 +1,33 @@
+SECTION .data
+
+
+
+
+SECTION .text
+
+	xor edx, edx
+	xor ecx, ecx
+	mov ebx, dataBuffer
+	xor, eax, eax
+	mov edi, 10
+
+	cmp dword [dataReadLen], 0
+	jz done
+
+convertOneByteAtATime:
+	mul edi
+	mov byte cl, [ebx]
+	sub cl, '0'
+	add eax, ecx
+	inc ebx
+	dec dword [dataReadLen]
+	jnz convertOneByteAtATime
+
+
+done:
+mov dword [number], eax
+
+add eax, 10
+
+mov edi, 10
+
