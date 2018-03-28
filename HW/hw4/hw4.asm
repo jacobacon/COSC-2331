@@ -1,6 +1,6 @@
 SECTION .data
 
-	array db 5,6,7,8,9,2,1,0,2,4,8,6,3,9,7
+	array dd 5,6,7,8,9,2,1,0,2,4,8,6,3,9,7
 	array_len db 15
 	newline db 10
 
@@ -37,32 +37,17 @@ SECTION .text
 	push 1				;Length
 	call writeString		;Print a newline
 
+	
 	push msg_even
 	push msg_even_len
 	call writeString
 
-	mov eax, array			;Store Array
-	mov ecx, array_len		;Store Array_Len
+	mov eax, array
+	mov ecx, array_len
 	mov edx, 0
-	call printAll			;Call PrintAll Subroutine
-
-	push newline
-	push 1
-	call writeString
-
-	push msg_odd
-	push msg_odd_len
-	call writeString
+	call printEven
 
 
-	mov eax, array			;Store Array
-	mov ecx, array_len		;Store Array_Len
-	mov edx, 0
-	call printAll			;Call PrintAll Subroutine
-
-	push newline
-	push 1
-	call writeString
 
 	
 	call exit
@@ -71,9 +56,9 @@ SECTION .text
 
 printAll:
 	
-	mov bl, [eax + edx]
-	add bl, '0'
-	mov [num], bl
+	mov ebx, [eax + edx*4]
+	add ebx, '0'
+	mov [num], ebx
 	push num
 	push dword 1
 
@@ -91,12 +76,40 @@ printAll:
 
 printEven:
 
+	mov ebx, [eax + edx*4]
+	add ebx, '0'
+	mov [num], ebx
+	push num
+	push dword 1
 
+	call writeString
+
+	inc edx
+
+	dec byte [ecx]
+	jnz printEven
+	
+
+	ret
 
 
 printOdd:
 
+	mov ebx, [eax + edx*4]
+	add ebx, '0'
+	mov [num], ebx
+	push num
+	push dword 1
 
+	call writeString
+
+	inc edx
+
+	dec byte [ecx]
+	jnz printOdd
+	
+
+	ret
 
 
 writeString:
