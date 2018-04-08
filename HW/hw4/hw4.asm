@@ -8,14 +8,15 @@ SECTION .data
 	msg_all_len equ $-msg_all
 
 	msg_odd db "Printing odd: "
-	msg_odd_len equ $-msg_all
+	msg_odd_len equ $-msg_odd
 
 	msg_even db "Printing even: "
-	msg_even_len equ $-msg_all
+	msg_even_len equ $-msg_even
 
 
 SECTION .bss
 	num resd 4
+	count resd 1
 
 
 SECTION .text
@@ -29,23 +30,45 @@ SECTION .text
 
 
 	mov eax, array			;Store Array
-	mov ecx, array_len		;Store Array_Len
-	mov edx, 0			;Counter
+	mov ecx, 15			;Counter
+	mov edx, 0
 	call printAll			;Call PrintAll Subroutine
 
 	push newline			;Push a newline
 	push 1				;Length
 	call writeString		;Print a newline
 
+
 	
 	push msg_even
 	push msg_even_len
 	call writeString
 
+	
+
 	mov eax, array
-	mov ecx, array_len
+	mov ecx, 8
 	mov edx, 0
 	call printEven
+
+	push newline
+	push 1
+	call writeString
+
+	push msg_odd
+	push msg_odd_len
+	call writeString
+
+	
+
+	mov eax, array
+	mov ecx, 7
+	mov edx, 1
+	call printOdd
+
+	push newline
+	push 1
+	call writeString
 
 
 
@@ -55,7 +78,6 @@ SECTION .text
 
 
 printAll:
-	
 	mov ebx, [eax + edx*4]
 	add ebx, '0'
 	mov [num], ebx
@@ -66,9 +88,9 @@ printAll:
 
 	inc edx
 
-	dec byte [ecx]
-	jnz printAll
-	
+	;dec byte [ecx]
+	;jnz printAll
+	loop printAll
 
 	ret
 
@@ -84,11 +106,9 @@ printEven:
 
 	call writeString
 
-	inc edx
+	add edx, 2
 
-	dec byte [ecx]
-	jnz printEven
-	
+	loop printEven
 
 	ret
 
@@ -103,11 +123,9 @@ printOdd:
 
 	call writeString
 
-	inc edx
+	add edx, 2
 
-	dec byte [ecx]
-	jnz printOdd
-	
+	loop printOdd
 
 	ret
 
@@ -127,9 +145,6 @@ writeString:
 	popad				;Pop all 32 Bit Registers to Original Values.
 	pop ebp
 	ret 8
-
-
-
 
 exit:
 	mov ebx, 0			;0 Status code
